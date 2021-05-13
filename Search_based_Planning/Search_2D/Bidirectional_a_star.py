@@ -7,6 +7,7 @@ import os
 import sys
 import math
 import heapq
+import time
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
@@ -20,7 +21,7 @@ class BidirectionalAStar:
         self.s_goal = s_goal
         self.heuristic_type = heuristic_type
 
-        self.Env = env.Env()  # class Env
+        self.Env = env.Env2()  # class Env
 
         self.u_set = self.Env.motions  # feasible input set
         self.obs = self.Env.obs  # position of obstacles
@@ -225,5 +226,38 @@ def main():
     plot.animation_bi_astar(path, visited_fore, visited_back, "Bidirectional-A*")  # animation
 
 
+def record_time():
+    method_name = 'Bidirectional A*'
+    time_start=time.time()
+
+    # x_start = (5, 5)
+    # x_goal = (45, 25)
+    x_start = (10, 10)
+    x_goal = (490, 290)
+    bastar = BidirectionalAStar(x_start, x_goal, "euclidean")
+    path, visited_fore, visited_back = bastar.searching()
+
+    time_end=time.time()
+    time_delta = time_end-time_start
+    path_len = path_length(path)
+    print(method_name, time_delta, path_len)
+
+    # plot = plotting.Plotting_my(x_start, x_goal)
+    # plot.animation_bi_astar(path, visited_fore, visited_back, "Bidirectional-A*")
+
+    return [method_name, time_delta, path_len]
+
+def path_length(path):
+    import numpy as np
+    path_=path
+    length = 0
+    path_ = np.array(path_)
+    for i in range(path_.shape[0]-1):
+        d = path_[i+1,:]-path_[i,:]
+        length += math.sqrt(np.sum(d**2))
+    return length
+
+
 if __name__ == '__main__':
-    main()
+    # main()
+    record_time()

@@ -7,6 +7,7 @@ import os
 import sys
 import math
 import matplotlib.pyplot as plt
+import time
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
@@ -43,8 +44,8 @@ class LPAStar:
 
     def run(self):
         self.Plot.plot_grid("Lifelong Planning A*")
-
         self.ComputeShortestPath()
+        print(t2-t1)
         self.plot_path(self.extract_path())
         self.fig.canvas.mpl_connect('button_press_event', self.on_press)
 
@@ -250,6 +251,11 @@ def main():
 
     lpastar = LPAStar(x_start, x_goal, "Euclidean")
     lpastar.run()
+
+def record_time():
+    return
+
+
 
 
 if __name__ == '__main__':

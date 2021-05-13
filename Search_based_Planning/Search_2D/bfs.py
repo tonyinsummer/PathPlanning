@@ -7,6 +7,8 @@ import os
 import sys
 from collections import deque
 
+from numpy.core.records import record
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Search_based_Planning/")
 
@@ -14,6 +16,7 @@ from Search_2D import plotting, env
 from Search_2D.Astar import AStar
 import math
 import heapq
+import time
 
 class BFS(AStar):
     """BFS add the new visited node in the end of the openset
@@ -65,5 +68,39 @@ def main():
     plot.animation(path, visited, "Breadth-first Searching (BFS)")
 
 
+
+def record_time():
+    method_name = 'Breadth First'
+    time_start = time.time()
+
+    # s_start = (5, 5)
+    # s_goal = (45, 25)
+    s_start = (10, 10)
+    s_goal = (490, 290)
+    bfs = BFS(s_start, s_goal, 'None')
+    path, visited = bfs.searching()
+
+    time_end=time.time()
+    time_delta = time_end-time_start
+    path_len = path_length(path)
+    print(method_name, time_delta, path_len)
+    # plot = plotting.Plotting_my(s_start, s_goal)
+    # plot.animation(path, visited, "Breadth-first Searching (BFS)")
+    return [method_name, time_delta, path_len]
+
+
+def path_length(path):
+    import numpy as np
+    path_=path
+    length = 0
+    path_ = np.array(path_)
+    for i in range(path_.shape[0]-1):
+        d = path_[i+1,:]-path_[i,:]
+        length += math.sqrt(np.sum(d**2))
+    return length
+
+
+
 if __name__ == '__main__':
-    main()
+    # main()
+    record_time()
