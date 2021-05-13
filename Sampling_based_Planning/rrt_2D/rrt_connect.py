@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Sampling_based_Planning/")
 
-from Sampling_based_Planning.rrt_2D import env, plotting, utils
+from rrt_2D import env, plotting, utils
 
 
 class Node:
@@ -33,9 +33,9 @@ class RrtConnect:
         self.V1 = [self.s_start]
         self.V2 = [self.s_goal]
 
-        self.env = env.Env()
-        self.plotting = plotting.Plotting(s_start, s_goal)
-        self.utils = utils.Utils()
+        self.env = env.Env2()
+        self.plotting = plotting.Plotting_my(s_start, s_goal)
+        self.utils = utils.Utils_my()
 
         self.x_range = self.env.x_range
         self.y_range = self.env.y_range
@@ -152,5 +152,40 @@ def main():
     rrt_conn.plotting.animation_connect(rrt_conn.V1, rrt_conn.V2, path, "RRT_CONNECT")
 
 
+def record_time():
+    import time
+    method_name = 'RRT Connect'
+    time_start=time.time()
+
+
+    x_start = (10, 10)  # Starting node
+    x_goal = (490, 290)  # Goal node
+    rrt_conn = RrtConnect(x_start, x_goal, 100, 0.1, 5000)
+    path = rrt_conn.planning()
+
+    time_end=time.time()
+    time_delta = time_end-time_start
+    path_len = path_length(path)
+    print(method_name, time_delta, path_len)
+
+    # rrt_conn.plotting.animation_connect(rrt_conn.V1, rrt_conn.V2, path, "RRT_CONNECT")
+
+    return [method_name, time_delta, path_len]
+
+
+def path_length(path):
+    import numpy as np
+    path_=path
+    length = 0
+    path_ = np.array(path_)
+    for i in range(path_.shape[0]-1):
+        d = path_[i+1,:]-path_[i,:]
+        length += math.sqrt(np.sum(d**2))
+    return length
+
+
+
+
 if __name__ == '__main__':
-    main()
+    # main()
+    record_time()
