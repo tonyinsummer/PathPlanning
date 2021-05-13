@@ -11,7 +11,8 @@ import numpy as np
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Sampling_based_Planning/")
 
-from Sampling_based_Planning.rrt_2D import env, plotting, utils
+# from Sampling_based_Planning.rrt_2D import env, plotting, utils
+from rrt_2D import env, plotting, utils
 
 
 class Node:
@@ -30,9 +31,9 @@ class Rrt:
         self.iter_max = iter_max
         self.vertex = [self.s_start]
 
-        self.env = env.Env()
-        self.plotting = plotting.Plotting(s_start, s_goal)
-        self.utils = utils.Utils()
+        self.env = env.Env2()
+        self.plotting = plotting.Plotting_my(s_start, s_goal)
+        self.utils = utils.Utils_my()
 
         self.x_range = self.env.x_range
         self.y_range = self.env.y_range
@@ -100,9 +101,12 @@ class Rrt:
 def main():
     x_start = (2, 2)  # Starting node
     x_goal = (49, 24)  # Goal node
+    # x_start = (10, 10)  # Starting node
+    # x_goal = (490, 290)  # Goal node
 
-    rrt = Rrt(x_start, x_goal, 0.5, 0.05, 10000)
+    rrt = Rrt(x_start, x_goal, 0.5, 0.05, 100000)
     path = rrt.planning()
+    # print(path)
 
     if path:
         rrt.plotting.animation(rrt.vertex, path, "RRT", True)
@@ -110,5 +114,42 @@ def main():
         print("No Path Found!")
 
 
+def record_time():
+    import time
+    method_name = 'RRT'
+    time_start=time.time()
+
+    # x_start = (2, 2)  # Starting node
+    # x_goal = (49, 24)  # Goal node
+    x_start = (10, 10)  # Starting node
+    x_goal = (490, 290)  # Goal node
+    rrt = Rrt(x_start, x_goal, 150, 0.5, 10000)
+    path = rrt.planning()
+
+    time_end=time.time()
+    time_delta = time_end-time_start
+    path_len = path_length(path)
+    print(method_name, time_delta, path_len)
+
+    # if path:
+    #     rrt.plotting.animation(rrt.vertex, path, "RRT", True)
+    # else:
+    #     print("No Path Found!")
+ 
+    return [method_name, time_delta, path_len]
+
+
+def path_length(path):
+    import numpy as np
+    path_=path
+    length = 0
+    path_ = np.array(path_)
+    for i in range(path_.shape[0]-1):
+        d = path_[i+1,:]-path_[i,:]
+        length += np.sqrt(np.sum(d**2))
+    return length
+
+
 if __name__ == '__main__':
-    main()
+    # main()
+    record_time()
